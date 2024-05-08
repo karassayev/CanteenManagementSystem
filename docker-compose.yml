@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_USER: postgres
+      POSTGRES_DB: canteen
+    ports:
+      - "5433:5432"
+    volumes:
+      - go-final-postgres-data1:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: app
+    environment:
+      PG_URL: 'postgres://postgres:qwerty@postgres:5432/canteen'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - ./pkg/database/.env:/app/.env
+
+volumes:
+  go-final-postgres-data1:
